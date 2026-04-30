@@ -1,0 +1,25 @@
+{
+  "name": "final-project",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/anissabelle/Resume-Creator.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/anissabelle/Resume-Creator/issues"
+  },
+  "homepage": "https://github.com/anissabelle/Resume-Creator#readme",
+  "dependencies": {
+    "express": "^5.2.1",
+    "sweetalert2": "^11.26.24"
+  }
+}
