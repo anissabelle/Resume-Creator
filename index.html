@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Resume Recipe</title>
+    <link rel="stylesheet" href="css/bootstrap-5.3.8-dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+</head>
+<body>
+    <!-- Asked ChatGPT for help with navbar -->
+    <!-- I used the navbar documentation on Bootstrap but the collapse button was not working (didn't have the js bootstrap script) -->
+    <!-- Also wanted the collapse button to be different color-->
+    <!-- Asked how navbars work with a single-page application since navbar documentation used for multi-page applications -->
+    <!-- Single Page navbars uses the same classlist.add and classlist.remove but with IDs attached to navbar links rather than using href -->
+    <!-- href="#" is used for every navbar link since we always stay on the one page the application has -->
+    <!-- Had to add the class "page" to all my page so that way when I want to hide/show pages using my navbar, it selects those with class "page" -->
+    <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#" id="navHome">Resume Recipe</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link" href="#" id="navCreate">Create Recipe</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" id="navLogin">Log in</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" id="navSignUp">Sign Up</a>
+                </li>
+            </ul>
+            </div>
+        </div>
+    </nav>
+    <div id="divMainPage" class="page">
+        <!-- Welcome Message -->
+        <div class="text-center d-flex justify-content-center mt-4">
+            <div class="container mt-5 mb-3">
+                <h1 class="display-1">Resume Recipe</h1>
+            </div>
+        </div>
+        <!-- Logo Image -->
+        <!-- Used AI to help size image on smaller devices. Image was too large to fit small screens with just the img-fluid class -->
+         <!-- ChatGPT suggested columns -->
+        <div class="d-flex justify-content-center align-items-center">
+            <div class="container text-center">
+                <img src="css\Resume Builder Logo.png" class="img-fluid col-10 col-mg-5 col-lg-6" alt="Resume Recipe Logo">
+            </div>
+        </div>
+        <div class="d-flex justify-content-center align-items-center mb-5" id="divHi!">
+            <div class="container text-center">
+                <p class="display-6">Resume Recipe is your tool to creating a personalized resume.<br><br>By integrating AI, this resume builder provides custom suggestions for improvements to create a resume that reflects you!</p>
+                <br>
+                <br>
+                <h2 class="display-3">Let's Build That Resume!</h2>
+                <br>
+                <button type="button" class="btn btn-primary btn-lg col-12 col-md-5" id="btnStart">Get Started</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Login Form -->
+    <div class="d-none page" id="divLogin">
+        <div class="d-flex justify-content-center align-items-center vh-100">
+            <div class="container col-12 col-md-6 col-lg-4">
+                <h1 class="display-4 mb-4 text-center">Login</h1>
+                <div class="card">
+                    <div class="card-body">
+                        <form>
+                            <label for="inputLoginEmail">Email</label>
+                            <input type="email" class="form-control" id="inputLoginEmail" aria-label="Email" required>
+                            <br>
+                            <label for="inputLoginPassword">Password</label>
+                            <input type="text" class="form-control" id="inputLoginPassword" aria-label="Password" required>
+                            <br>
+                            <div class="d-flex justify-content-center">
+                                <button type="button" class="btn btn-lg btn-primary col-5" id="btnLogin">Login</button>
+                            </div>
+                            <br>
+                            <div class="d-flex justify-content-center">
+                                <p class="mt-2 me-3">Don't have an account?</p>
+                                <button class="btn btn-sm btn-dark" id="btnLoginToSignUp">Sign Up</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Sign Up Form -->
+
+    <!-- Resume Form -->
+    <div class="d-none page mt-5" id="divResume">
+        <div class="d-flex justify-content-center align-items-center vh-100" id="divFirstStep">
+            <div class="container col-12 col-md-6 col-lg-4">
+                <h1 class="display-4 mb-4 text-center mt-5">Tell us about yourself</h1>
+                <div class="card">
+                    <div class="card-body">
+                        <p>All fields are required to continue</p>
+                        <form>
+                            <label for="inputFirstName">First Name</label>
+                            <input type="text" class="form-control" id="inputFirstName" aria-label="First Name" required>
+                            <br>
+                            <label for="inputLastName">Last Name</label>
+                            <input type="text" class="form-control" id="inputLastName" aria-label="Last Name" required>
+                            <br>
+                            <label for="inputEmail">Email</label>
+                            <input type="email" class="form-control" id="inputEmail" aria-label="Email" required>
+                            <br>
+                            <label for="inputPhone">Phone Number</label>
+                            <input type="tel" class="form-control" id="inputPhone" aria-label="Phone Number" required>
+                            <br>
+
+                            <div class="d-flex justify-content-between">
+                                <button type="button" class="btn btn-secondary" id="btnBack1">Back to Home</button>
+                                <button type="button" class="btn btn-primary" id="btnNextStep1">Next Step</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Work Experience -->
+        <div class="d-flex justify-content-center align-items-center vh-100 d-none page" id="divSecondStep">
+            <div class="container col-12 col-md-6 col-lg-4 mt-5">
+                <h1 class="display-4 mb-4 text-center">Work Experience</h1>
+                <div class="card">
+                    <div class="card-body">
+                        <p>If you do not have any work experience to add, click next step. We can always make changes later.<br>Descriptions and start/end dates are not required, but recommended. </p>
+                        <form>
+                            <label for="inputJobTitle">Job Title</label>
+                            <input type="text" class="form-control" id="inputJobTitle" aria-label="Job Title">
+                            <br>
+                            <label for="inputLastName">Description</label>
+                            <input type="text" class="form-control" id="inputDescription" aria-label="Job Description">
+                            <br>
+                            <label for="inputStartDateJob">Start Date of Job</label>
+                            <input type="date" class="form-control" id="inputStartDateJob" aria-label="Start Date of Job">
+                            <br>
+                            <label for="inputEndDateJobt">End Date of Job</label>
+                            <input type="date" class="form-control" id="inputEndDateJob" aria-label="End Date of Job">
+                            <br>
+                            <br>
+                            <div class="d-flex justify-content-between">
+                                <button type="button" class="btn btn-secondary" id="btnBack2">Go Back</button>
+                                <button type="button" class="btn btn-info col-6" id="btnAddJob">Add Another Job</button>
+                                <button type="button" class="btn btn-primary" id="btnNextStep2">Next Step</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Skills -->
+        <div class="d-flex justify-content-center align-items-center vh-100 d-none page" id="divThirdStep">
+            <div class="container col-12 col-md-6 col-lg-4 mt-5">
+                <h1 class="display-6 mb-4 text-center">Skills</h1>
+                <div class="card">
+                    <div class="card-body">
+                        <p>If you do not have skills to add, click next step. We can always make changes later.</p>
+                        <form>
+                            <label for="inputSkill">Skill</label>
+                            <input type="text" class="form-control" id="inputSkill" aria-label="Skill Title">
+                            <br>
+                            <br>
+                            <div class="d-flex justify-content-between">
+                                <button type="button" class="btn btn-secondary" id="btnBack3">Go Back</button>
+                                <button type="button" class="btn btn-info col-6" id="btnAddSkill">Add Another Skill</button>
+                                <button type="button" class="btn btn-primary" id="btnNextStep3">Next Step</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Certifications -->
+        <div class="d-flex justify-content-center align-items-center vh-100 d-none page" id="divFourthStep">
+            <div class="container col-12 col-md-6 col-lg-4 mt-5">
+                <h1 class="display-4 mb-4 text-center">Certifications</h1>
+                <div class="card">
+                    <div class="card-body">
+                        <p>If you do not have certifications to add, click next step. We can always make changes later. <br>Date is not required.</p>
+                        <form>
+                            <label for="inputCertification">Certification Title</label>
+                            <input type="text" class="form-control" id="inputCertification" aria-label="Certification Title">
+                            <br>
+                            <label for="inputDateCertification">Date of Certification</label>
+                            <input type="date" class="form-control" id="inputDateCertification" aria-label="Date of Certification">
+                            <br>
+                            <br>
+                            <div class="d-flex justify-content-between">
+                                <button type="button" class="btn btn-secondary" id="btnBack4">Go Back</button>
+                                <button type="button" class="btn btn-info col-6" id="btnAddCertification">Add Another Certification</button>
+                                <button type="button" class="btn btn-primary" id="btnNextStep4">Next Step</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <!-- Awards -->
+    <div class="d-flex justify-content-center align-items-center vh-100 d-none page" id="divFifthStep">
+            <div class="container col-12 col-md-6 col-lg-4 mt-5">
+                <h1 class="display-4 mb-4 text-center">Awards</h1>
+                <div class="card">
+                    <div class="card-body">
+                        <p>If you do not have awards to add, click next step. We can always make changes later.<br>Date is not required.</p>
+                        <form>
+                            <label for="inputAward">Award Title</label>
+                            <input type="text" class="form-control" id="inputAward" aria-label="Award Title">
+                            <br>
+                            <label for="inputDateAward">Date of Award</label>
+                            <input type="date" class="form-control" id="inputDateAward" aria-label="Date of Award">
+                            <br>
+                            <br>
+                            <div class="d-flex justify-content-between">
+                                <button type="button" class="btn btn-secondary" id="btnBack5">Go Back</button>
+                                <button type="button" class="btn btn-info col-6" id="btnAddAward">Add Another Award</button>
+                                <button type="button" class="btn btn-primary" id="btnNextStep5">Next Step</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Projects -->
+        <div class="d-flex justify-content-center align-items-center vh-100 d-none page" id="divSixthStep">
+            <div class="container col-12 col-md-6 col-lg-4 mt-5">
+                <h1 class="display-4 mb-4 text-center">Projects</h1>
+                <div class="card">
+                    <div class="card-body">
+                        <p>If you do not have projects to add, click next step. We can always make changes later.<br>Date is not required. Description not required, but recommended.</p>
+                        <form>
+                            <label for="inputProject">Project Title</label>
+                            <input type="text" class="form-control" id="inputProject" aria-label="Project Title">
+                            <br>
+                            <label for="inputProjectDescription">Project Description</label>
+                            <input type="text" class="form-control" id="inputProjectDescription" aria-label="Project Description">
+                            <br>
+                            <label for="inputStartDateProject">Start Date of Project</label>
+                            <input type="date" class="form-control" id="inputStartDateProject" aria-label="Start Date of Project">
+                            <br>
+                            <label for="inputEndDateProject">Start Date of Project</label>
+                            <input type="date" class="form-control" id="inputEndDateProject" aria-label="End Date of Project">
+                            <br>
+                            <br>
+                            <div class="d-flex justify-content-between">
+                                <button type="button" class="btn btn-secondary" id="btnBack6">Go Back</button>
+                                <button type="button" class="btn btn-info col-6" id="btnAddProject">Add Another Project</button>
+                                <button type="button" class="btn btn-primary" id="btnNextStep6">Next Step</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Submit -->
+        <div class="d-flex justify-content-center align-items-center vh-100 d-none page" id="divSeventhStep">
+            <div class="container col-12 col-md-6 col-lg-4 mt-5">
+                <div class="d-flex justify-content-center align-items-center">
+                    <div class="container text-center">
+                        <img src="css/Resume Builder Thumbs Up.png" class="img-fluid col-9" alt="Resume Recipe Logo">
+                    </div>
+                </div> 
+                <h1 class="display-4 mb-4 text-center">Almost There!</h1>
+                <div class="card">
+                    <div class="card-body">
+                        <p>Finally give your resume a title to remember by.</p>
+                        <form>
+                            <label for="inputTitle">Resume Title</label>
+                            <input type="text" class="form-control" id="inputTitle" aria-label="Resume Title">
+                            <br>
+                            <div class="d-flex justify-content-between">
+                                <button type="button" class="btn btn-secondary" id="btnBack7">Go Back</button>
+                                <button type="button" class="btn btn-primary" id="btnSubmit">Create Resume</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="js/index.js"></script>
+    <script src="js/bootstrap-5.3.8-dist/js/bootstrap.bundle.js"></script>
+</body>
+</html>
