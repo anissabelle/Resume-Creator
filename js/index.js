@@ -31,6 +31,7 @@ document.querySelector('#navSignUp').addEventListener("click", function(){
     }) 
     document.querySelector('#divSignUp').classList.remove("d-none") 
 })
+
 /**************** 
  * 
  * 
@@ -481,4 +482,137 @@ document.querySelector('#btnSubmit').addEventListener("click", function(){
 
         document.querySelector('#inputTitle').value = ""
     }
+})
+
+/**************** 
+ * 
+ * 
+ * Login Form
+ * Validation of form elements
+ * 
+ * 
+****************/
+document.querySelector('#btnLogin').addEventListener("click", function(){
+    const email = document.querySelector('#inputLoginEmail').value.trim()
+    const password = document.querySelector('#inputLoginPassword').value.trim()
+    const regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    strErrorMessage = ""
+    blnError = false
+
+    if(!email || !regexEmail.test(email)){
+        blnError = true
+        strErrorMessage += "You must enter a valid email.<br>"
+    }
+    if(!password){
+        blnError = true
+        strErrorMessage += "You must enter a password.<br>"
+    }
+
+    if(blnError){
+        Swal.fire({
+            title: "Uh Oh...",
+            html: `<p>${strErrorMessage}</p>`,
+            icon: "error"
+        });
+    }
+    else{
+        let timerInterval;
+        Swal.fire({
+        title: "Welcome back!",
+        timer: 1000,
+        timerProgressBar: true,
+        didOpen: () => {
+            Swal.showLoading();
+            const timer = Swal.getPopup().querySelector("b");
+            timerInterval = setInterval(() => {
+            timer.textContent = `${Swal.getTimerLeft()}`;
+            }, 100);
+        },
+        willClose: () => {
+            clearInterval(timerInterval);
+        }
+        })
+        document.querySelector('#divLogin').classList.add("d-none")
+        document.querySelector('#divFirstStep').classList.remove("d-none")
+    }
+})
+document.querySelector('#btnLoginToSignUp').addEventListener("click", function(){
+    document.querySelector('#divSignUp').classList.remove('d-none')
+    document.querySelector('#divLogin').classList.add('d-none')
+})
+
+/**************** 
+ * 
+ * 
+ * Sign Up Form
+ * Validation of form elements
+ * 
+ * 
+****************/ 
+document.querySelector('#btnSignUp').addEventListener("click", function(){
+    const firstName = document.querySelector('#inputSignUpFirstName').value.trim()
+    const lastName = document.querySelector('#inputSignUpLastName').value.trim()
+    const phoneNo = document.querySelector('#inputSignUpPhone').value.trim()
+    const email = document.querySelector('#inputSignUpEmail').value.trim()
+    const password = document.querySelector('#inputSignUpPassword').value.trim()
+    const regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    const regexPhone = /^(\+1\s?)?(\(\d{3}\)|\d{3})[-.\s]?\d{3}[-.\s]?\d{4}$/
+    strErrorMessage = ""
+    blnError = false
+
+    if(!firstName){
+        blnError = true
+        strErrorMessage += "You must enter a first name.<br>"
+    }
+
+    if(!lastName){
+        blnError = true
+        strErrorMessage += "You must enter a last name.<br>"
+    }
+
+    if(!phoneNo || !regexPhone.test(phoneNo)){
+        blnError = true
+        strErrorMessage += "You must enter a valid phone number.<br>"
+    }
+
+    if(!email || !regexEmail.test(email)){
+        blnError = true
+        strErrorMessage += "You must enter a valid email.<br>"
+    }
+    if(!password){
+        blnError = true
+        strErrorMessage += "You must enter a password.<br>"
+    }
+
+    if(blnError){
+        Swal.fire({
+            title: "Uh Oh...",
+            html: `<p>${strErrorMessage}</p>`,
+            icon: "error"
+        });
+    }
+    else{
+        let timerInterval;
+        Swal.fire({
+        title: "Account Created!",
+        timer: 1000,
+        timerProgressBar: true,
+        didOpen: () => {
+            Swal.showLoading();
+            const timer = Swal.getPopup().querySelector("b");
+            timerInterval = setInterval(() => {
+            timer.textContent = `${Swal.getTimerLeft()}`;
+            }, 100);
+        },
+        willClose: () => {
+            clearInterval(timerInterval);
+        }
+        })
+        document.querySelector('#divSignUp').classList.add("d-none")
+        document.querySelector('#divResume').classList.remove("d-none")
+    }
+})
+document.querySelector('#btnSignUpToLogin').addEventListener("click", function(){
+    document.querySelector('#divSignUp').classList.add('d-none')
+    document.querySelector('#divLogin').classList.remove('d-none')
 })
