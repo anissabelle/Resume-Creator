@@ -1,5 +1,6 @@
 import express from 'express'
 import sqlite3 from'sqlite3'
+import sha256 from"sha256"
 
 // Creating server
 const HTTP_PORT = 8000

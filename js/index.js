@@ -1,9 +1,11 @@
+const strBaseurl = 'http://localhost:8000'
 /**************** 
  * 
  * 
  * Showing/Hiding Navbar Links
  * Used ChatGPT for a help with understanding using a navbar for a single page application
  * Used ChatGPT for more efficient method to code showing/hiding divs when user uses navbar
+ * Suggested adding the .page class
  * 
  * 
 ****************/ 
@@ -50,7 +52,15 @@ document.querySelector('#btnBack1').addEventListener("click", function(){
     document.querySelector('#divResume').classList.add("d-none")
     document.querySelector('#divMainPage').classList.remove("d-none")
 })
-document.querySelector('#btnNextStep1').addEventListener("click", function(){
+/**************** 
+ * 
+ * 
+ * API request to get personal information if user is logged in
+ * API request to send personal information
+ * 
+ * 
+****************/ 
+document.querySelector('#btnNextStep1').addEventListener("click", async function(){
     const firstName = document.querySelector('#inputFirstName').value.trim()
     const lastName = document.querySelector('#inputLastName').value.trim()
     const email = document.querySelector('#inputEmail').value.trim()
@@ -88,37 +98,82 @@ document.querySelector('#btnNextStep1').addEventListener("click", function(){
         });
     }
     else{
-        let timerInterval;
-        Swal.fire({
-        title: "Personal Information Submitted!",
-        timer: 1000,
-        timerProgressBar: true,
-        didOpen: () => {
-            Swal.showLoading();
-            const timer = Swal.getPopup().querySelector("b");
-            timerInterval = setInterval(() => {
-            timer.textContent = `${Swal.getTimerLeft()}`;
-            }, 100);
-        },
-        willClose: () => {
-            clearInterval(timerInterval);
-        }
-        })
 
-        // If all form elements are filled then user can move onto next step
-        document.querySelector('#divFirstStep').classList.add("d-none")
-        document.querySelector('#divSecondStep').classList.remove("d-none")
+        // Creating object storing personal info
+        const objPersonalInfo = {
+            firstName: firstName,
+            lastName: lastName,
+            email: email,
+            phoneNo: phoneNo
+        }
+        // API request
+        try{
+            const response = await fetch(strBaseurl + "/personal-info", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(objPersonalInfo)
+            })
+            const objData = await response.json()
+
+            if(response.ok){
+                if(objData.Outcome){
+                    let timerInterval;
+                    Swal.fire({
+                    title: "Personal Information Submitted!",
+                    timer: 1000,
+                    timerProgressBar: true,
+                    didOpen: () => {
+                        Swal.showLoading();
+                        const timer = Swal.getPopup().querySelector("b");
+                        timerInterval = setInterval(() => {
+                        timer.textContent = `${Swal.getTimerLeft()}`;
+                        }, 100);
+                    },
+                    willClose: () => {
+                        clearInterval(timerInterval);
+                    }
+                    })
+
+                    // If all form elements are filled then user can move onto next step
+                    document.querySelector('#divFirstStep').classList.add("d-none")
+                    document.querySelector('#divSecondStep').classList.remove("d-none")
+                }
+                else{
+                    Swal.fire({
+                        title: "Personal Information Save Failed",
+                        icon: "error",
+                        text: objData.Error
+                    })
+
+                    return
+                }
+            }
+        } catch (error){
+             Swal.fire({
+                title: "Oh no, something went wrong!",
+                icon: "error",
+                text: "Could not connect to the server."
+            })
+
+            return
+        }
     }
 })
+
 // Resume Page: Work Experience
 document.querySelector('#btnBack2').addEventListener("click", function(){
     document.querySelector('#divSecondStep').classList.add("d-none")
     document.querySelector('#divFirstStep').classList.remove("d-none")
 })
-document.querySelector('#btnAddJob').addEventListener("click", function(){
-    const jobTitle = document.querySelector('#inputJobTitle').value
+document.querySelector('#btnAddJob').addEventListener("click", async function(){
+    const jobTitle = document.querySelector('#inputJobTitle').value.trim()
+    const description = document.querySelector('#inputDescription').value.trim()
+    const startDateJob = document.querySelector('#inputStartDateJob').value
+    const endDateJob = document.querySelector('#inputEndDateJob').value
 
-    strErrorMessage = "You must enter a job title to add a new job."
+    let strErrorMessage = "You must enter a job title to add a new job."
 
     if(!jobTitle){
         Swal.fire({
@@ -128,50 +183,134 @@ document.querySelector('#btnAddJob').addEventListener("click", function(){
         });
     }
     else{
-        let timerInterval;
-        Swal.fire({
-        title: "Job Submitted!",
-        timer: 1000,
-        timerProgressBar: true,
-        didOpen: () => {
-            Swal.showLoading();
-            const timer = Swal.getPopup().querySelector("b");
-            timerInterval = setInterval(() => {
-            timer.textContent = `${Swal.getTimerLeft()}`;
-            }, 100);
-        },
-        willClose: () => {
-            clearInterval(timerInterval);
-        }
-        })
 
-        // Clear input fields
-        // https://www.w3schools.com/howto/howto_html_clear_input.asp
-        document.querySelector('#inputJobTitle').value = ""
-        document.querySelector('#inputDescription').value = ""
-        document.querySelector('#inputStartDateJob').value = ""
-        document.querySelector('#inputEndDateJob').value = ""
+        // Creating object storing personal info
+        // Asked ChatGPT how I would create an API request where not all values are required
+        // || null
+        const objWorkExp = {
+            jobTitle: jobTitle,
+            description: description || null,
+            startDateJob: startDateJob || null,
+            endDateJob: endDateJob|| null
+        }
+        // API request
+        try{
+            const response = await fetch(strBaseurl + "/work-experience", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(objWorkExp)
+            })
+            const objData = await response.json()
+
+            if(response.ok){
+                if(objData.Outcome){
+                    let timerInterval;
+                    Swal.fire({
+                    title: "Job Submitted!",
+                    timer: 1000,
+                    timerProgressBar: true,
+                    didOpen: () => {
+                        Swal.showLoading();
+                        const timer = Swal.getPopup().querySelector("b");
+                        timerInterval = setInterval(() => {
+                        timer.textContent = `${Swal.getTimerLeft()}`;
+                        }, 100);
+                    },
+                    willClose: () => {
+                        clearInterval(timerInterval);
+                    }
+                    })
+
+                    // Clear input fields
+                    // https://www.w3schools.com/howto/howto_html_clear_input.asp
+                    document.querySelector('#inputJobTitle').value = ""
+                    document.querySelector('#inputDescription').value = ""
+                    document.querySelector('#inputStartDateJob').value = ""
+                    document.querySelector('#inputEndDateJob').value = ""
+                }
+                else{
+                    Swal.fire({
+                        title:"Oh no, something went wrong!",
+                        icon:"error",
+                        text:objData.Error
+                    })
+                }
+            }
+        } catch (error){
+            Swal.fire({
+                title: "Oh no, something went wrong!",
+                icon: "error",
+                text: "Could not connect to the server."
+            })
+
+            return
+        }
     }
 })
-document.querySelector('#btnNextStep2').addEventListener("click", function(){
-    const jobTitle = document.querySelector('#inputJobTitle').value
+document.querySelector('#btnNextStep2').addEventListener("click", async function(){
+    const jobTitle = document.querySelector('#inputJobTitle').value.trim()
+    const description = document.querySelector('#inputDescription').value.trim()
+    const startDateJob = document.querySelector('#inputStartDateJob').value
+    const endDateJob = document.querySelector('#inputEndDateJob').value
+
     if(jobTitle){
-        let timerInterval;
-        Swal.fire({
-        title: "Job Submitted!",
-        timer: 1000,
-        timerProgressBar: true,
-        didOpen: () => {
-            Swal.showLoading();
-            const timer = Swal.getPopup().querySelector("b");
-            timerInterval = setInterval(() => {
-            timer.textContent = `${Swal.getTimerLeft()}`;
-            }, 100);
-        },
-        willClose: () => {
-            clearInterval(timerInterval);
+
+        const objWorkExp = {
+            jobTitle: jobTitle,
+            description: description || null,
+            startDateJob: startDateJob || null,
+            endDateJob: endDateJob|| null
         }
-        })
+        // API request
+        try{
+            const response = await fetch(strBaseurl + "/work-experience", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(objWorkExp)
+            })
+            const objData = await response.json()
+
+            if(response.ok){
+                if(objData.Outcome){
+                    let timerInterval;
+                    Swal.fire({
+                    title: "Job Submitted!",
+                    timer: 1000,
+                    timerProgressBar: true,
+                    didOpen: () => {
+                        Swal.showLoading();
+                        const timer = Swal.getPopup().querySelector("b");
+                        timerInterval = setInterval(() => {
+                        timer.textContent = `${Swal.getTimerLeft()}`;
+                        }, 100);
+                    },
+                    willClose: () => {
+                        clearInterval(timerInterval);
+                    }
+                    })
+                }
+                else{
+                    Swal.fire({
+                        title:"Oh no, something went wrong!",
+                        icon:"error",
+                        text:objData.Error
+                    })
+                    return
+                }
+            }
+        } catch (error){
+            Swal.fire({
+                title: "Oh no, something went wrong!",
+                icon: "error",
+                text: "Could not connect to the server."
+            })
+
+            return
+        }
     }
 
     document.querySelector('#inputJobTitle').value = ""
@@ -187,10 +326,10 @@ document.querySelector('#btnBack3').addEventListener("click", function(){
     document.querySelector('#divThirdStep').classList.add("d-none")
     document.querySelector('#divSecondStep').classList.remove("d-none")
 })
-document.querySelector('#btnAddSkill').addEventListener("click", function(){
-    const skill = document.querySelector('#inputSkill').value
+document.querySelector('#btnAddSkill').addEventListener("click", async function(){
+    const skill = document.querySelector('#inputSkill').value.trim()
 
-    strErrorMessage = "You must enter a skill to add a new skill."
+    let strErrorMessage = "You must enter a skill to add a new skill."
 
     if(!skill){
         Swal.fire({
@@ -200,47 +339,109 @@ document.querySelector('#btnAddSkill').addEventListener("click", function(){
         });
     }
     else{
-        let timerInterval;
-        Swal.fire({
-        title: "Skill Submitted!",
-        timer: 1000,
-        timerProgressBar: true,
-        didOpen: () => {
-            Swal.showLoading();
-            const timer = Swal.getPopup().querySelector("b");
-            timerInterval = setInterval(() => {
-            timer.textContent = `${Swal.getTimerLeft()}`;
-            }, 100);
-        },
-        willClose: () => {
-            clearInterval(timerInterval);
-        }
-        })
+        // API request
+        try{
+            const response = await fetch(strBaseurl + "/skill", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({skill:skill})
+            })
+            const objData = await response.json()
 
-        // Clear input fields
-        // https://www.w3schools.com/howto/howto_html_clear_input.asp
-        document.querySelector('#inputSkill').value = ""
+            if(response.ok){
+                if(objData.Outcome){
+                    let timerInterval;
+                    Swal.fire({
+                    title: "Skill Submitted!",
+                    timer: 1000,
+                    timerProgressBar: true,
+                    didOpen: () => {
+                        Swal.showLoading();
+                        const timer = Swal.getPopup().querySelector("b");
+                        timerInterval = setInterval(() => {
+                        timer.textContent = `${Swal.getTimerLeft()}`;
+                        }, 100);
+                    },
+                    willClose: () => {
+                        clearInterval(timerInterval);
+                    }
+                    })
+
+                    // Clear input fields
+                    // https://www.w3schools.com/howto/howto_html_clear_input.asp
+                    document.querySelector('#inputSkill').value = ""
+                }
+                else{
+                    Swal.fire({
+                        title:"Oh no, something went wrong!",
+                        icon:"error",
+                        text:objData.Error
+                    })
+                }
+            }
+        } catch (error){
+            Swal.fire({
+                title: "Oh no, something went wrong!",
+                icon: "error",
+                text: "Could not connect to the server."
+            })
+
+            return
+        }
     }
 })
-document.querySelector('#btnNextStep3').addEventListener("click", function(){
-    const skill = document.querySelector('#inputSkill').value
+document.querySelector('#btnNextStep3').addEventListener("click", async function(){
+    const skill = document.querySelector('#inputSkill').value.trim()
     if(skill){
-        let timerInterval;
-        Swal.fire({
-        title: "Skill Submitted!",
-        timer: 1000,
-        timerProgressBar: true,
-        didOpen: () => {
-            Swal.showLoading();
-            const timer = Swal.getPopup().querySelector("b");
-            timerInterval = setInterval(() => {
-            timer.textContent = `${Swal.getTimerLeft()}`;
-            }, 100);
-        },
-        willClose: () => {
-            clearInterval(timerInterval);
+        // API request
+        try{
+            const response = await fetch(strBaseurl + "/skill", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({skill:skill})
+            })
+            const objData = await response.json()
+
+            if(response.ok){
+                if(objData.Outcome){
+                    let timerInterval;
+                    Swal.fire({
+                    title: "Skill Submitted!",
+                    timer: 1000,
+                    timerProgressBar: true,
+                    didOpen: () => {
+                        Swal.showLoading();
+                        const timer = Swal.getPopup().querySelector("b");
+                        timerInterval = setInterval(() => {
+                        timer.textContent = `${Swal.getTimerLeft()}`;
+                        }, 100);
+                    },
+                    willClose: () => {
+                        clearInterval(timerInterval);
+                    }
+                    })
+                }
+                else{
+                    Swal.fire({
+                        title: "Save Failed",
+                        icon: "error",
+                        text: objData.Error
+                    })
+                    return
+                }
+            }
+        } catch (error){
+            Swal.fire({
+                title: "Oh no, something went wrong!",
+                icon: "error",
+                text: "Could not connect to the server."
+            })
+            return
         }
-        })
     }
     document.querySelector('#inputSkill').value = ""
 
@@ -252,10 +453,11 @@ document.querySelector('#btnBack4').addEventListener("click", function(){
     document.querySelector('#divFourthStep').classList.add("d-none")
     document.querySelector('#divThirdStep').classList.remove("d-none")
 })
-document.querySelector('#btnAddCertification').addEventListener("click", function(){
+document.querySelector('#btnAddCertification').addEventListener("click", async function(){
     const certification = document.querySelector('#inputCertification').value
+    const certificationDate = document.querySelector('#inputDateCertification').value
 
-    strErrorMessage = "You must enter a certification to add a new certification."
+    let strErrorMessage = "You must enter a certification to add a new certification."
 
     if(!certification){
         Swal.fire({
@@ -265,46 +467,119 @@ document.querySelector('#btnAddCertification').addEventListener("click", functio
         });
     }
     else{
-        let timerInterval;
-        Swal.fire({
-        title: "Certification Submitted!",
-        timer: 1000,
-        timerProgressBar: true,
-        didOpen: () => {
-            Swal.showLoading();
-            const timer = Swal.getPopup().querySelector("b");
-            timerInterval = setInterval(() => {
-            timer.textContent = `${Swal.getTimerLeft()}`;
-            }, 100);
-        },
-        willClose: () => {
-            clearInterval(timerInterval);
+        // Certification object
+        const objCert = {
+            certification:certification,
+            certificationDate: certificationDate || null,
         }
-        })
+        // API request
+        try{
+            const response = await fetch(strBaseurl + "/certification", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(objCert)
+            })
+            const objData = await response.json()
+            if(response.ok){
+                if(objData.Outcome){
+                    let timerInterval;
+                    Swal.fire({
+                    title: "Certification Submitted!",
+                    timer: 1000,
+                    timerProgressBar: true,
+                    didOpen: () => {
+                        Swal.showLoading();
+                        const timer = Swal.getPopup().querySelector("b");
+                        timerInterval = setInterval(() => {
+                        timer.textContent = `${Swal.getTimerLeft()}`;
+                        }, 100);
+                    },
+                    willClose: () => {
+                        clearInterval(timerInterval);
+                    }
+                    })
 
-        document.querySelector('#inputCertification').value = ""
-        document.querySelector('#inputDateCertification').value = ""
+                    document.querySelector('#inputCertification').value = ""
+                    document.querySelector('#inputDateCertification').value = ""
+                }
+            }
+            else{
+                Swal.fire({
+                    title: "Certification Save Failed",
+                    icon: "error",
+                    text: objData.Error
+                })
+                return
+            }
+        } catch (error){
+            Swal.fire({
+                title: "Oh no, something went wrong!",
+                icon: "error",
+                text: "Could not connect to the server."
+            })
+            return
+        }
     }
 })
-document.querySelector('#btnNextStep4').addEventListener("click", function(){
-    const certification = document.querySelector('#inputCertification').value
+document.querySelector('#btnNextStep4').addEventListener("click", async function(){
+    const certification = document.querySelector('#inputCertification').value.trim()
+    const certificationDate = document.querySelector('#inputDateCertification').value
+
     if(certification){
-        let timerInterval;
-        Swal.fire({
-        title: "Certification Submitted!",
-        timer: 1000,
-        timerProgressBar: true,
-        didOpen: () => {
-            Swal.showLoading();
-            const timer = Swal.getPopup().querySelector("b");
-            timerInterval = setInterval(() => {
-            timer.textContent = `${Swal.getTimerLeft()}`;
-            }, 100);
-        },
-        willClose: () => {
-            clearInterval(timerInterval);
+        // Certification object
+        const objCert = {
+            certification:certification,
+            certificationDate: certificationDate || null,
         }
-        })
+        // API request
+        try{
+            const response = await fetch(strBaseurl + "/certification", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(objCert)
+            })
+            const objData = await response.json()
+            if(response.ok){
+                if(objData.Outcome){
+                    let timerInterval;
+                    Swal.fire({
+                    title: "Certification Submitted!",
+                    timer: 1000,
+                    timerProgressBar: true,
+                    didOpen: () => {
+                        Swal.showLoading();
+                        const timer = Swal.getPopup().querySelector("b");
+                        timerInterval = setInterval(() => {
+                        timer.textContent = `${Swal.getTimerLeft()}`;
+                        }, 100);
+                    },
+                    willClose: () => {
+                        clearInterval(timerInterval);
+                    }
+                    })
+                }
+            }
+            else{
+                Swal.fire({
+                    title:"Oh no, something went wrong!",
+                    icon:"error",
+                    text:objData.Error
+                })
+                return
+            }
+        } catch (error){
+            Swal.fire({
+                title: "Oh no, something went wrong!",
+                icon: "error",
+                text: "Could not connect to the server."
+            })
+
+            return
+        }
     }
     document.querySelector('#inputCertification').value = ""
     document.querySelector('#inputDateCertification').value = ""
@@ -317,10 +592,11 @@ document.querySelector('#btnBack5').addEventListener("click", function(){
     document.querySelector('#divFifthStep').classList.add("d-none")
     document.querySelector('#divFourthStep').classList.remove("d-none")
 })
-document.querySelector('#btnAddAward').addEventListener("click", function(){
-    const award = document.querySelector('#inputAward').value
+document.querySelector('#btnAddAward').addEventListener("click", async function(){
+    const award = document.querySelector('#inputAward').value.trim()
+    const awardDate = document.querySelector('#inputDateAward').value
 
-    strErrorMessage = "You must enter an award to add a new award."
+    let strErrorMessage = "You must enter an award to add a new award."
 
     if(!award){
         Swal.fire({
@@ -330,46 +606,118 @@ document.querySelector('#btnAddAward').addEventListener("click", function(){
         });
     }
     else{
-        let timerInterval;
-        Swal.fire({
-        title: "Award Submitted!",
-        timer: 1000,
-        timerProgressBar: true,
-        didOpen: () => {
-            Swal.showLoading();
-            const timer = Swal.getPopup().querySelector("b");
-            timerInterval = setInterval(() => {
-            timer.textContent = `${Swal.getTimerLeft()}`;
-            }, 100);
-        },
-        willClose: () => {
-            clearInterval(timerInterval);
+        // Award object
+        const objAward = {
+            award:award,
+            awardDate: awardDate || null,
         }
-        })
+        // API request
+        try{
+            const response = await fetch(strBaseurl + "/award", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(objAward)
+            })
+            const objData = await response.json()
+            if(response.ok){
+                if(objData.Outcome){
+                    let timerInterval;
+                    Swal.fire({
+                    title: "Award Submitted!",
+                    timer: 1000,
+                    timerProgressBar: true,
+                    didOpen: () => {
+                        Swal.showLoading();
+                        const timer = Swal.getPopup().querySelector("b");
+                        timerInterval = setInterval(() => {
+                        timer.textContent = `${Swal.getTimerLeft()}`;
+                        }, 100);
+                    },
+                    willClose: () => {
+                        clearInterval(timerInterval);
+                    }
+                    })
 
-        document.querySelector('#inputAward').value = ""
-        document.querySelector('#inputDateAward').value = ""
+                    document.querySelector('#inputAward').value = ""
+                    document.querySelector('#inputDateAward').value = ""
+                }
+            }
+            else{
+                Swal.fire({
+                    title: "Award Save Failed",
+                    icon: "error",
+                    text: objData.Error
+                })
+
+                return
+            }
+        } catch (error){
+            Swal.fire({
+                title: "Oh no, something went wrong!",
+                icon: "error",
+                text: "Could not connect to the server."
+            })
+            return
+        }
     }
 })
-document.querySelector('#btnNextStep5').addEventListener("click", function(){
+document.querySelector('#btnNextStep5').addEventListener("click", async function(){
     const award = document.querySelector('#inputAward').value
+    const awardDate = document.querySelector('#inputDateAward').value
+
     if(award){
-        let timerInterval;
-        Swal.fire({
-        title: "Award Submitted!",
-        timer: 1000,
-        timerProgressBar: true,
-        didOpen: () => {
-            Swal.showLoading();
-            const timer = Swal.getPopup().querySelector("b");
-            timerInterval = setInterval(() => {
-            timer.textContent = `${Swal.getTimerLeft()}`;
-            }, 100);
-        },
-        willClose: () => {
-            clearInterval(timerInterval);
+        // Award object
+        const objAward = {
+            award:award,
+            awardDate: awardDate || null,
         }
-        })
+        // API request
+        try{
+            const response = await fetch(strBaseurl + "/award", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(objAward)
+            })
+            const objData = await response.json()
+
+            if(response.ok && objData.Outcome){
+                let timerInterval;
+                Swal.fire({
+                title: "Award Submitted!",
+                timer: 1000,
+                timerProgressBar: true,
+                didOpen: () => {
+                    Swal.showLoading();
+                    const timer = Swal.getPopup().querySelector("b");
+                    timerInterval = setInterval(() => {
+                    timer.textContent = `${Swal.getTimerLeft()}`;
+                    }, 100);
+                },
+                willClose: () => {
+                    clearInterval(timerInterval);
+                }
+                })
+            }
+            else{
+                Swal.fire({
+                    title: "Award Save Failed",
+                    icon: "error",
+                    text: objData.Error
+                })
+                return
+            }
+        } catch (error){
+            Swal.fire({
+                title:"Oh no, something went wrong!",
+                icon:"error",
+                text:"Could not connect to the server."
+            })
+            return
+        }
     }
     document.querySelector('#inputAward').value = ""
     document.querySelector('#inputDateAward').value = ""
@@ -382,10 +730,13 @@ document.querySelector('#btnBack6').addEventListener("click", function(){
     document.querySelector('#divSixthStep').classList.add("d-none")
     document.querySelector('#divFifthStep').classList.remove("d-none")
 })
-document.querySelector('#btnAddProject').addEventListener("click", function(){
-    const project = document.querySelector('#inputProject').value
+document.querySelector('#btnAddProject').addEventListener("click", async function(){
+    const project = document.querySelector('#inputProject').value.trim()
+    const projectDescription = document.querySelector('#inputProjectDescription').value.trim()
+    const projectStartDate = document.querySelector('#inputStartDateProject').value
+    const projectEndDate = document.querySelector('#inputEndDateProject').value
 
-    strErrorMessage = "You must enter a project to add a new project."
+    let strErrorMessage = "You must enter a project to add a new project."
 
     if(!project){
         Swal.fire({
@@ -395,48 +746,128 @@ document.querySelector('#btnAddProject').addEventListener("click", function(){
         });
     }
     else{
-        let timerInterval;
-        Swal.fire({
-        title: "Project Submitted!",
-        timer: 1000,
-        timerProgressBar: true,
-        didOpen: () => {
-            Swal.showLoading();
-            const timer = Swal.getPopup().querySelector("b");
-            timerInterval = setInterval(() => {
-            timer.textContent = `${Swal.getTimerLeft()}`;
-            }, 100);
-        },
-        willClose: () => {
-            clearInterval(timerInterval);
+        // Project object
+        const objProject = {
+            project:project,
+            description: projectDescription || null,
+            startDate: projectStartDate || null,
+            endDate: projectEndDate || null,
         }
-        })
+        // API request
+        try{
+            const response = await fetch(strBaseurl + "/project", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(objProject)
+            })
 
-        document.querySelector('#inputProject').value = ""
-        document.querySelector('#inputProjectDescription').value = ""
-        document.querySelector('#inputStartDateProject').value = ""
-        document.querySelector('#inputEndDateProject').value = ""
+            if(response.ok){
+                const objData = await response.json()
+                if(objData.Outcome){
+                    let timerInterval;
+                    Swal.fire({
+                    title: "Project Submitted!",
+                    timer: 1000,
+                    timerProgressBar: true,
+                    didOpen: () => {
+                        Swal.showLoading();
+                        const timer = Swal.getPopup().querySelector("b");
+                        timerInterval = setInterval(() => {
+                        timer.textContent = `${Swal.getTimerLeft()}`;
+                        }, 100);
+                    },
+                    willClose: () => {
+                        clearInterval(timerInterval);
+                    }
+                    })
+
+                    document.querySelector('#inputProject').value = ""
+                    document.querySelector('#inputProjectDescription').value = ""
+                    document.querySelector('#inputStartDateProject').value = ""
+                    document.querySelector('#inputEndDateProject').value = ""
+                }
+                else{
+                    Swal.fire({
+                        title:"Oh no, something went wrong!",
+                        icon:"error",
+                        text:objData.Error
+                    })
+                    return
+                }
+            }
+        } catch (error){
+            Swal.fire({
+                title:"Oh no, something went wrong!",
+                icon:"error",
+                text:"Could not connect to the server."
+            })
+            return
+        }
     }
 })
-document.querySelector('#btnNextStep6').addEventListener("click", function(){
-    const project = document.querySelector('#inputProject').value
+document.querySelector('#btnNextStep6').addEventListener("click", async function(){
+    const project = document.querySelector('#inputProject').value.trim()
+    const projectDescription = document.querySelector('#inputProjectDescription').value.trim()
+    const projectStartDate = document.querySelector('#inputStartDateProject').value
+    const projectEndDate = document.querySelector('#inputEndDateProject').value
+
     if(project){
-        let timerInterval;
-        Swal.fire({
-        title: "Project Submitted!",
-        timer: 1000,
-        timerProgressBar: true,
-        didOpen: () => {
-            Swal.showLoading();
-            const timer = Swal.getPopup().querySelector("b");
-            timerInterval = setInterval(() => {
-            timer.textContent = `${Swal.getTimerLeft()}`;
-            }, 100);
-        },
-        willClose: () => {
-            clearInterval(timerInterval);
+        // Project object
+        const objProject = {
+            project:project,
+            description: projectDescription || null,
+            startDate: projectStartDate || null,
+            endDate: projectEndDate || null,
         }
-        })
+        // API request
+        try{
+            const response = await fetch(strBaseurl + "/project", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(objProject)
+            })
+            if(response.ok){
+                const objData = await response.json()
+                if(objData.Outcome){
+                    let timerInterval;
+                    Swal.fire({
+                    title: "Project Submitted!",
+                    timer: 1000,
+                    timerProgressBar: true,
+                    didOpen: () => {
+                        Swal.showLoading();
+                        const timer = Swal.getPopup().querySelector("b");
+                        timerInterval = setInterval(() => {
+                        timer.textContent = `${Swal.getTimerLeft()}`;
+                        }, 100);
+                    },
+                    willClose: () => {
+                        clearInterval(timerInterval);
+                    }
+                    })
+                }
+                else{
+                    Swal.fire({
+                            title:"Oh no, something went wrong!",
+                            icon:"error",
+                            text: objData.Error
+                        })
+                        return
+                }
+                
+            }
+        } catch (error){
+            Swal.fire({
+                title:"Oh no, something went wrong!",
+                icon:"error",
+                text:"Could not connect to the server."
+            })
+            return
+        }
     }
     document.querySelector('#inputProject').value = ""
     document.querySelector('#inputProjectDescription').value = ""
@@ -451,9 +882,9 @@ document.querySelector('#btnBack7').addEventListener("click", function(){
     document.querySelector('#divSeventhStep').classList.add("d-none")
     document.querySelector('#divSixthStep').classList.remove("d-none")
 })
-document.querySelector('#btnSubmit').addEventListener("click", function(){
+document.querySelector('#btnSubmit').addEventListener("click", async function(){
     const title = document.querySelector('#inputTitle').value.trim()
-    strErrorMessage = "You must enter a title to create resume"
+    let strErrorMessage = "You must enter a title to create resume"
 
     if(!title){
         Swal.fire({
@@ -463,24 +894,55 @@ document.querySelector('#btnSubmit').addEventListener("click", function(){
         });
     }
     else{
-        let timerInterval;
-        Swal.fire({
-        title: "Resume Submitted!",
-        timer: 1000,
-        timerProgressBar: true,
-        didOpen: () => {
-            Swal.showLoading();
-            const timer = Swal.getPopup().querySelector("b");
-            timerInterval = setInterval(() => {
-            timer.textContent = `${Swal.getTimerLeft()}`;
-            }, 100);
-        },
-        willClose: () => {
-            clearInterval(timerInterval);
-        }
-        })
+        // API request
+        try{
+            const response = await fetch(strBaseurl + "/title", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({title:title})
+            })
+            if(response.ok){
+                const objData = await response.json()
+                if(objData.Outcome){
+                    let timerInterval;
+                    Swal.fire({
+                    title: "Resume Submitted!",
+                    timer: 1000,
+                    timerProgressBar: true,
+                    didOpen: () => {
+                        Swal.showLoading();
+                        const timer = Swal.getPopup().querySelector("b");
+                        timerInterval = setInterval(() => {
+                        timer.textContent = `${Swal.getTimerLeft()}`;
+                        }, 100);
+                    },
+                    willClose: () => {
+                        clearInterval(timerInterval);
+                    }
+                    })
 
-        document.querySelector('#inputTitle').value = ""
+                    document.querySelector('#inputTitle').value = ""
+                }
+                else{
+                    Swal.fire({
+                            title:"Oh no, something went wrong!",
+                            icon:"error",
+                            text: objData.Error
+                        })
+                        return
+                }
+    
+            }
+        } catch (error){
+            Swal.fire({
+                title:"Oh no, something went wrong!",
+                icon:"error",
+                text:"Could not connect to the server."
+            })
+            return
+        }
     }
 })
 
@@ -492,12 +954,12 @@ document.querySelector('#btnSubmit').addEventListener("click", function(){
  * 
  * 
 ****************/
-document.querySelector('#btnLogin').addEventListener("click", function(){
+document.querySelector('#btnLogin').addEventListener("click", async function(){
     const email = document.querySelector('#inputLoginEmail').value.trim()
     const password = document.querySelector('#inputLoginPassword').value.trim()
     const regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-    strErrorMessage = ""
-    blnError = false
+    let strErrorMessage = ""
+    let blnError = false
 
     if(!email || !regexEmail.test(email)){
         blnError = true
@@ -516,24 +978,58 @@ document.querySelector('#btnLogin').addEventListener("click", function(){
         });
     }
     else{
-        let timerInterval;
-        Swal.fire({
-        title: "Welcome back!",
-        timer: 1000,
-        timerProgressBar: true,
-        didOpen: () => {
-            Swal.showLoading();
-            const timer = Swal.getPopup().querySelector("b");
-            timerInterval = setInterval(() => {
-            timer.textContent = `${Swal.getTimerLeft()}`;
-            }, 100);
-        },
-        willClose: () => {
-            clearInterval(timerInterval);
+        // Creating object storing login info
+        const objLoginInfo = {
+            email: email,
+            password: password
         }
-        })
-        document.querySelector('#divLogin').classList.add("d-none")
-        document.querySelector('#divFirstStep').classList.remove("d-none")
+        // API request
+        try{
+            const response = await fetch(strBaseurl + "/login", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(objLoginInfo)
+            })
+            const objData = await response.json()
+            if(response.ok){
+                    if(objData.Outcome){
+                        let timerInterval;
+                        Swal.fire({
+                        title: "Welcome Back!",
+                        timer: 1000,
+                        timerProgressBar: true,
+                        didOpen: () => {
+                            Swal.showLoading();
+                            const timer = Swal.getPopup().querySelector("b");
+                            timerInterval = setInterval(() => {
+                            timer.textContent = `${Swal.getTimerLeft()}`;
+                            }, 100);
+                        },
+                        willClose: () => {
+                            clearInterval(timerInterval);
+                        }
+                        })
+                        document.querySelector('#divLogin').classList.add("d-none")
+                        document.querySelector('#divFirstStep').classList.remove("d-none")
+                    } else {
+                        Swal.fire({
+                            title:"Oh no, something went wrong!",
+                            icon:"error",
+                            text: objData.Error
+                        })
+                        return
+                    }
+                }
+        } catch (error){
+            Swal.fire({
+                title:"Oh no, something went wrong!",
+                icon:"error",
+                text:"Could not connect to the server."
+            })
+            return
+        }
     }
 })
 document.querySelector('#btnLoginToSignUp').addEventListener("click", function(){
@@ -549,7 +1045,7 @@ document.querySelector('#btnLoginToSignUp').addEventListener("click", function()
  * 
  * 
 ****************/ 
-document.querySelector('#btnSignUp').addEventListener("click", function(){
+document.querySelector('#btnSignUp').addEventListener("click", async function(){
     const firstName = document.querySelector('#inputSignUpFirstName').value.trim()
     const lastName = document.querySelector('#inputSignUpLastName').value.trim()
     const phoneNo = document.querySelector('#inputSignUpPhone').value.trim()
@@ -557,8 +1053,8 @@ document.querySelector('#btnSignUp').addEventListener("click", function(){
     const password = document.querySelector('#inputSignUpPassword').value.trim()
     const regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
     const regexPhone = /^(\+1\s?)?(\(\d{3}\)|\d{3})[-.\s]?\d{3}[-.\s]?\d{4}$/
-    strErrorMessage = ""
-    blnError = false
+    let strErrorMessage = ""
+    let blnError = false
 
     if(!firstName){
         blnError = true
@@ -592,24 +1088,61 @@ document.querySelector('#btnSignUp').addEventListener("click", function(){
         });
     }
     else{
-        let timerInterval;
-        Swal.fire({
-        title: "Account Created!",
-        timer: 1000,
-        timerProgressBar: true,
-        didOpen: () => {
-            Swal.showLoading();
-            const timer = Swal.getPopup().querySelector("b");
-            timerInterval = setInterval(() => {
-            timer.textContent = `${Swal.getTimerLeft()}`;
-            }, 100);
-        },
-        willClose: () => {
-            clearInterval(timerInterval);
+        // Creating object storing personal info
+        const objPersonalInfo = {
+            firstName: firstName,
+            lastName: lastName,
+            email: email,
+            phoneNo: phoneNo,
+            password: password
         }
-        })
-        document.querySelector('#divSignUp').classList.add("d-none")
-        document.querySelector('#divResume').classList.remove("d-none")
+        // API request
+        try{
+            const response = await fetch(strBaseurl + "/signUp", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(objPersonalInfo)
+            })
+            const objData = await response.json()
+            if(response.ok){
+                    if(objData.Outcome){
+                        let timerInterval;
+                        Swal.fire({
+                        title: "Account Created!",
+                        timer: 1000,
+                        timerProgressBar: true,
+                        didOpen: () => {
+                            Swal.showLoading();
+                            const timer = Swal.getPopup().querySelector("b");
+                            timerInterval = setInterval(() => {
+                            timer.textContent = `${Swal.getTimerLeft()}`;
+                            }, 100);
+                        },
+                        willClose: () => {
+                            clearInterval(timerInterval);
+                        }
+                        })
+                        document.querySelector('#divSignUp').classList.add("d-none")
+                        document.querySelector('#divResume').classList.remove("d-none")
+                    } else {
+                        Swal.fire({
+                            title:"Oh no, something went wrong!",
+                            icon:"error",
+                            text:objData.Error
+                        })
+                        return
+                    }
+                }
+        } catch (error){
+            Swal.fire({
+                title:"Oh no, something went wrong!",
+                icon:"error",
+                text:"Could not connect to the server."
+            })
+            return
+        }
     }
 })
 document.querySelector('#btnSignUpToLogin').addEventListener("click", function(){

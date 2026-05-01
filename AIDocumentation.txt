@@ -1,0 +1,18 @@
+For the Resume Recipe website, I used Codex to help me create the SQL Database,
+the api requests.
+
+I built most the frontend myself besides the API requests. 
+I realized how much code I was copying and pasting, and I knew that API requests
+would be a lot of busy work.
+
+Prompts given to Codex:
+
+I am creating a resume builder website. I need help with creating the database. 
+The AGENTS.md file has the database design I would like to implement. If there 
+is any uncertainty ask questions to clarify. Please only create the database.
+
+Can you help me create the API requests and routes according to the AGENTS.md file? 
+Can you create a copy of my index.js and resume.js file where you place the edits 
+rather than edit my original files?
+
+Can you delete the files you created from the last prompt?
