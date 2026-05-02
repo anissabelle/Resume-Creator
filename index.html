@@ -139,35 +139,6 @@
 
     <!-- Resume Form -->
     <div class="d-none page mt-5" id="divResume">
-        <div class="d-flex justify-content-center align-items-center vh-100" id="divFirstStep">
-            <div class="container col-12 col-md-6 col-lg-4 mt-5">
-                <h1 class="display-4 mb-4 text-center">Tell us about yourself</h1>
-                <div class="card">
-                    <div class="card-body">
-                        <p>All fields are required to continue</p>
-                        <form>
-                            <label for="inputFirstName">First Name</label>
-                            <input type="text" class="form-control" id="inputFirstName" aria-label="First Name" required>
-                            <br>
-                            <label for="inputLastName">Last Name</label>
-                            <input type="text" class="form-control" id="inputLastName" aria-label="Last Name" required>
-                            <br>
-                            <label for="inputEmail">Email</label>
-                            <input type="email" class="form-control" id="inputEmail" aria-label="Email" required>
-                            <br>
-                            <label for="inputPhone">Phone Number</label>
-                            <input type="tel" class="form-control" id="inputPhone" aria-label="Phone Number" required>
-                            <br>
-
-                            <div class="d-flex justify-content-between">
-                                <button type="button" class="btn btn-secondary" id="btnBack1">Back to Home</button>
-                                <button type="button" class="btn btn-primary" id="btnNextStep1">Next Step</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
         <!-- Work Experience -->
         <div class="d-flex justify-content-center align-items-center vh-100 d-none page" id="divSecondStep">
             <div class="container col-12 col-md-6 col-lg-4 mt-5">
@@ -179,7 +150,7 @@
                             <label for="inputJobTitle">Job Title</label>
                             <input type="text" class="form-control" id="inputJobTitle" aria-label="Job Title">
                             <br>
-                            <label for="inputLastName">Description</label>
+                            <label for="inputDescription">Description</label>
                             <input type="text" class="form-control" id="inputDescription" aria-label="Job Description">
                             <br>
                             <label for="inputStartDateJob">Start Date of Job</label>
@@ -189,7 +160,7 @@
                             <input type="date" class="form-control" id="inputEndDateJob" aria-label="End Date of Job">
                             <br>
                             <br>
-                            <div class="d-flex justify-content-between">
+                            <div class="d-flex justify-content-between"> <!-- ignore that these button numbers are incorrect. I had a page before this Maybe will fix -->
                                 <button type="button" class="btn btn-secondary" id="btnBack2">Go Back</button>
                                 <button type="button" class="btn btn-info col-6" id="btnAddJob">Add Another Job</button>
                                 <button type="button" class="btn btn-primary" id="btnNextStep2">Next Step</button>
