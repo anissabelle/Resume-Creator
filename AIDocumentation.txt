@@ -2,8 +2,11 @@ For the Resume Recipe website, I used Codex to help me create the SQL Database,
 the api requests.
 
 I built most the frontend myself besides the API requests. 
-I realized how much code I was copying and pasting, and I knew that API requests
+I realized how much code I was copying and pasting, and I knew that API routes
 would be a lot of busy work.
+
+Used AI to test API routes/requests specifically just for the Sign Up feature.
+It found that I had an old Node process using port 8000
 
 Prompts given to Codex:
 

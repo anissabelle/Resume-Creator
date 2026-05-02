@@ -1,4 +1,4 @@
-const strBaseurl = 'http://localhost:8000'
+const strBaseurl = 'http://localhost:8001'
 /**************** 
  * 
  * 
@@ -109,6 +109,7 @@ document.querySelector('#btnAddJob').addEventListener("click", async function(){
                 let timerInterval;
                 Swal.fire({
                 title: "Job Submitted!",
+                html: "Closing in <b></b> milliseconds.",
                 timer: 1000,
                 timerProgressBar: true,
                 didOpen: () => {
@@ -177,6 +178,7 @@ document.querySelector('#btnNextStep2').addEventListener("click", async function
                 let timerInterval;
                 Swal.fire({
                 title: "Job Submitted!",
+                html: "Closing in <b></b> milliseconds.",
                 timer: 1000,
                 timerProgressBar: true,
                 didOpen: () => {
@@ -252,6 +254,7 @@ document.querySelector('#btnAddSkill').addEventListener("click", async function(
                 let timerInterval;
                 Swal.fire({
                 title: "Skill Submitted!",
+                html: "Closing in <b></b> milliseconds.",
                 timer: 1000,
                 timerProgressBar: true,
                 didOpen: () => {
@@ -306,6 +309,7 @@ document.querySelector('#btnNextStep3').addEventListener("click", async function
                 let timerInterval;
                 Swal.fire({
                 title: "Skill Submitted!",
+                html: "Closing in <b></b> milliseconds.",
                 timer: 1000,
                 timerProgressBar: true,
                 didOpen: () => {
@@ -380,6 +384,7 @@ document.querySelector('#btnAddCertification').addEventListener("click", async f
                 let timerInterval;
                 Swal.fire({
                 title: "Certification Submitted!",
+                html: "Closing in <b></b> milliseconds.",
                 timer: 1000,
                 timerProgressBar: true,
                 didOpen: () => {
@@ -439,6 +444,7 @@ document.querySelector('#btnNextStep4').addEventListener("click", async function
                 let timerInterval;
                 Swal.fire({
                 title: "Certification Submitted!",
+                html: "Closing in <b></b> milliseconds.",
                 timer: 1000,
                 timerProgressBar: true,
                 didOpen: () => {
@@ -514,6 +520,7 @@ document.querySelector('#btnAddAward').addEventListener("click", async function(
                 let timerInterval;
                 Swal.fire({
                 title: "Award Submitted!",
+                html: "Closing in <b></b> milliseconds.",
                 timer: 1000,
                 timerProgressBar: true,
                 didOpen: () => {
@@ -575,6 +582,7 @@ document.querySelector('#btnNextStep5').addEventListener("click", async function
                 let timerInterval;
                 Swal.fire({
                 title: "Award Submitted!",
+                html: "Closing in <b></b> milliseconds.",
                 timer: 1000,
                 timerProgressBar: true,
                 didOpen: () => {
@@ -656,6 +664,7 @@ document.querySelector('#btnAddProject').addEventListener("click", async functio
                 let timerInterval;
                 Swal.fire({
                 title: "Project Submitted!",
+                html: "Closing in <b></b> milliseconds.",
                 timer: 1000,
                 timerProgressBar: true,
                 didOpen: () => {
@@ -724,6 +733,7 @@ document.querySelector('#btnNextStep6').addEventListener("click", async function
                     let timerInterval;
                     Swal.fire({
                     title: "Project Submitted!",
+                    html: "Closing in <b></b> milliseconds.",
                     timer: 1000,
                     timerProgressBar: true,
                     didOpen: () => {
@@ -796,6 +806,7 @@ document.querySelector('#btnSubmit').addEventListener("click", async function(){
                 let timerInterval;
                 Swal.fire({
                 title: "Resume Submitted!",
+                html: "Closing in <b></b> milliseconds.",
                 timer: 1000,
                 timerProgressBar: true,
                 didOpen: () => {
@@ -839,6 +850,10 @@ document.querySelector('#btnSubmit').addEventListener("click", async function(){
  * 
  * 
 ****************/
+document.querySelector('#btnSignIn').addEventListener("click", function(){
+    document.querySelector('#divLogin').classList.remove('d-none')
+    document.querySelector('#divMainPage').classList.add('d-none')
+})
 document.querySelector('#btnLogin').addEventListener("click", async function(){
     const email = document.querySelector('#inputLoginEmail').value.trim()
     const password = document.querySelector('#inputLoginPassword').value.trim()
@@ -879,26 +894,29 @@ document.querySelector('#btnLogin').addEventListener("click", async function(){
             })
             const objData = await response.json()
             if(response.ok && objData.Outcome){
-                sessionStorage.setItem("userID", objData.userID)
+                sessionStorage.setItem("userID", objData.User_ID)
+                userID = objData.User_ID
 
-                    let timerInterval;
-                    Swal.fire({
-                    title: "Welcome Back!",
-                    timer: 1000,
-                    timerProgressBar: true,
-                    didOpen: () => {
-                        Swal.showLoading();
-                        const timer = Swal.getPopup().querySelector("b");
-                        timerInterval = setInterval(() => {
-                        timer.textContent = `${Swal.getTimerLeft()}`;
-                        }, 100);
-                    },
-                    willClose: () => {
-                        clearInterval(timerInterval);
-                    }
-                    })
-                    document.querySelector('#divLogin').classList.add("d-none")
-                    document.querySelector('#divFirstStep').classList.remove("d-none")
+                let timerInterval;
+                Swal.fire({
+                title: "Welcome Back!",
+                html: "Closing in <b></b> milliseconds.",
+                timer: 1000,
+                timerProgressBar: true,
+                didOpen: () => {
+                    Swal.showLoading();
+                    const timer = Swal.getPopup().querySelector("b");
+                    timerInterval = setInterval(() => {
+                    timer.textContent = `${Swal.getTimerLeft()}`;
+                    }, 100);
+                },
+                willClose: () => {
+                    clearInterval(timerInterval);
+                }
+                })
+                document.querySelector('#divLogin').classList.add("d-none")
+                document.querySelector('#divResume').classList.remove("d-none")
+                document.querySelector('#divSecondStep').classList.remove("d-none")
             } 
             else {
                 Swal.fire({
@@ -931,6 +949,7 @@ document.querySelector('#btnLoginToSignUp').addEventListener("click", function()
  * 
  * 
 ****************/ 
+
 document.querySelector('#btnSignUp').addEventListener("click", async function(){
     const firstName = document.querySelector('#inputSignUpFirstName').value.trim()
     const lastName = document.querySelector('#inputSignUpLastName').value.trim()
@@ -993,9 +1012,12 @@ document.querySelector('#btnSignUp').addEventListener("click", async function(){
             })
             const objData = await response.json()
             if(response.ok && objData.Outcome){
+                    sessionStorage.setItem("userID", objData.User_ID)
+                    userID = objData.User_ID
                     let timerInterval;
                     Swal.fire({
                     title: "Account Created!",
+                    html: "Closing in <b></b> milliseconds.",
                     timer: 1000,
                     timerProgressBar: true,
                     didOpen: () => {
@@ -1010,7 +1032,7 @@ document.querySelector('#btnSignUp').addEventListener("click", async function(){
                     }
                     })
                     document.querySelector('#divSignUp').classList.add("d-none")
-                    document.querySelector('#divResume').classList.remove("d-none")
+                    document.querySelector('#divSecondStep').classList.remove("d-none")
                 }
                 else {
                         Swal.fire({

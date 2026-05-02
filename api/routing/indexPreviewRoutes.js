@@ -1,4 +1,10 @@
-import express from 'express';
+/**********************************************************************
+ *
+ * Code created from Codex
+ * Looked over each line/code pattern to ensure I understand
+ *
+ **********************************************************************/
+
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { DatabaseSync } from 'node:sqlite';
@@ -22,8 +28,6 @@ import { createHash } from 'crypto';
  * those requests contain enough information to work with tblUsers.
  *
  **********************************************************************/
-
-const objIndexPreviewRoutes = express.Router();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -208,38 +212,79 @@ const saveResumeDraftToDatabase = () => {
     return fnSaveTransaction();
 };
 
-/**********************************************************************
- * POST /personal-info
- *
- * Matches:
- * fetch(strBaseurl + "/personal-info", { method: "POST", ... })
- *
- * Stores the personal information in the temporary draft object.
- **********************************************************************/
-objIndexPreviewRoutes.post('/personal-info', (objRequest, objResponse) => {
-    const strFirstName = normalizeString(objRequest.body.firstName);
-    const strLastName = normalizeString(objRequest.body.lastName);
-    const strEmail = normalizeString(objRequest.body.email);
-    const strPhoneNo = normalizeString(objRequest.body.phoneNo);
+const handlePersonalInfoRoute = (objRequest, objResponse, fnNext) => {
+    if (objRequest.method === 'GET') {
+        const strEmail = normalizeString(objRequest.query.email).toLowerCase();
+        const intUserId = objRequest.query.userId ? Number(objRequest.query.userId) : null;
 
-    objResumeDraft.personalInfo = {
-        firstName: strFirstName,
-        lastName: strLastName,
-        email: strEmail,
-        phoneNo: strPhoneNo
-    };
+        if (intUserId) {
+            const objUserStatement = objDatabase.prepare(`
+                SELECT
+                    User_ID,
+                    First_Name,
+                    Last_Name,
+                    Phone_Number,
+                    Email_Address,
+                    Created_At,
+                    Updated_At
+                FROM tblUsers
+                WHERE User_ID = ?
+            `);
 
-    return objResponse.status(200).json({
-        Outcome: true
-    });
-});
+            const arrUserRows = objUserStatement.all(intUserId);
+            return objResponse.status(200).json(arrUserRows);
+        }
 
-/**********************************************************************
- * POST /work-experience
- *
- * Adds one work experience record to the draft.
- **********************************************************************/
-objIndexPreviewRoutes.post('/work-experience', (objRequest, objResponse) => {
+        if (strEmail) {
+            const objUserStatement = objDatabase.prepare(`
+                SELECT
+                    User_ID,
+                    First_Name,
+                    Last_Name,
+                    Phone_Number,
+                    Email_Address,
+                    Created_At,
+                    Updated_At
+                FROM tblUsers
+                WHERE Email_Address = ?
+            `);
+
+            const arrUserRows = objUserStatement.all(strEmail);
+            return objResponse.status(200).json(arrUserRows);
+        }
+
+        return objResponse.status(400).json({
+            Outcome: false,
+            Error: 'Provide userId or email in the query string.'
+        });
+    }
+
+    if (objRequest.method === 'POST') {
+        const strFirstName = normalizeString(objRequest.body.firstName);
+        const strLastName = normalizeString(objRequest.body.lastName);
+        const strEmail = normalizeString(objRequest.body.email);
+        const strPhoneNo = normalizeString(objRequest.body.phoneNo);
+
+        objResumeDraft.personalInfo = {
+            firstName: strFirstName,
+            lastName: strLastName,
+            email: strEmail,
+            phoneNo: strPhoneNo
+        };
+
+        return objResponse.status(200).json({
+            Outcome: true
+        });
+    }
+
+    return fnNext();
+};
+
+const handleWorkExperienceRoute = (objRequest, objResponse, fnNext) => {
+    if (objRequest.method !== 'POST') {
+        return fnNext();
+    }
+
     const strJobTitle = normalizeString(objRequest.body.jobTitle);
     const strDescription = normalizeString(objRequest.body.description);
     const strStartDateJob = objRequest.body.startDateJob ?? null;
@@ -255,14 +300,13 @@ objIndexPreviewRoutes.post('/work-experience', (objRequest, objResponse) => {
     return objResponse.status(201).json({
         Outcome: true
     });
-});
+};
 
-/**********************************************************************
- * POST /skill
- *
- * Adds one skill to the draft.
- **********************************************************************/
-objIndexPreviewRoutes.post('/skill', (objRequest, objResponse) => {
+const handleSkillRoute = (objRequest, objResponse, fnNext) => {
+    if (objRequest.method !== 'POST') {
+        return fnNext();
+    }
+
     const strSkill = normalizeString(objRequest.body.skill);
 
     objResumeDraft.skills.push({
@@ -272,14 +316,13 @@ objIndexPreviewRoutes.post('/skill', (objRequest, objResponse) => {
     return objResponse.status(201).json({
         Outcome: true
     });
-});
+};
 
-/**********************************************************************
- * POST /certification
- *
- * Adds one certification to the draft.
- **********************************************************************/
-objIndexPreviewRoutes.post('/certification', (objRequest, objResponse) => {
+const handleCertificationRoute = (objRequest, objResponse, fnNext) => {
+    if (objRequest.method !== 'POST') {
+        return fnNext();
+    }
+
     const strCertification = normalizeString(objRequest.body.certification);
     const strCertificationDate = objRequest.body.certificationDate ?? null;
 
@@ -291,14 +334,13 @@ objIndexPreviewRoutes.post('/certification', (objRequest, objResponse) => {
     return objResponse.status(201).json({
         Outcome: true
     });
-});
+};
 
-/**********************************************************************
- * POST /award
- *
- * Adds one award to the draft.
- **********************************************************************/
-objIndexPreviewRoutes.post('/award', (objRequest, objResponse) => {
+const handleAwardRoute = (objRequest, objResponse, fnNext) => {
+    if (objRequest.method !== 'POST') {
+        return fnNext();
+    }
+
     const strAward = normalizeString(objRequest.body.award);
     const strAwardDate = objRequest.body.awardDate ?? null;
 
@@ -310,14 +352,13 @@ objIndexPreviewRoutes.post('/award', (objRequest, objResponse) => {
     return objResponse.status(201).json({
         Outcome: true
     });
-});
+};
 
-/**********************************************************************
- * POST /project
- *
- * Adds one project to the draft.
- **********************************************************************/
-objIndexPreviewRoutes.post('/project', (objRequest, objResponse) => {
+const handleProjectRoute = (objRequest, objResponse, fnNext) => {
+    if (objRequest.method !== 'POST') {
+        return fnNext();
+    }
+
     const strProject = normalizeString(objRequest.body.project);
     const strDescription = normalizeString(objRequest.body.description);
     const strStartDate = objRequest.body.startDate ?? null;
@@ -333,15 +374,13 @@ objIndexPreviewRoutes.post('/project', (objRequest, objResponse) => {
     return objResponse.status(201).json({
         Outcome: true
     });
-});
+};
 
-/**********************************************************************
- * POST /title
- *
- * Stores the final resume title and then writes the full draft into
- * dbResume using the currently authenticated user.
- **********************************************************************/
-objIndexPreviewRoutes.post('/title', (objRequest, objResponse) => {
+const handleTitleRoute = (objRequest, objResponse, fnNext) => {
+    if (objRequest.method !== 'POST') {
+        return fnNext();
+    }
+
     const strTitle = normalizeString(objRequest.body.title);
 
     if (!objResumeDraft.personalInfo) {
@@ -374,17 +413,15 @@ objIndexPreviewRoutes.post('/title', (objRequest, objResponse) => {
             Error: objError.message
         });
     }
-});
+};
 
-/**********************************************************************
- * POST /login
- *
- * Validates login information against tblUsers.
- **********************************************************************/
-objIndexPreviewRoutes.post('/login', (objRequest, objResponse) => {
+const handleLoginRoute = (objRequest, objResponse, fnNext) => {
+    if (objRequest.method !== 'POST') {
+        return fnNext();
+    }
+
     const strEmail = normalizeString(objRequest.body.email).toLowerCase();
     const strPassword = normalizeString(objRequest.body.password);
-
     const strPasswordHash = getPasswordHash(strPassword);
     const objLoginStatement = objDatabase.prepare(`
         SELECT User_ID
@@ -405,22 +442,21 @@ objIndexPreviewRoutes.post('/login', (objRequest, objResponse) => {
     intCurrentUserId = objUserRow.User_ID;
 
     return objResponse.status(200).json({
-        Outcome: true
+        Outcome: true,
+        User_ID: objUserRow.User_ID
     });
-});
+};
 
-/**********************************************************************
- * POST /signUp
- *
- * Creates a new user record in tblUsers.
- **********************************************************************/
-objIndexPreviewRoutes.post('/signUp', (objRequest, objResponse) => {
+const handleSignUpRoute = (objRequest, objResponse, fnNext) => {
+    if (objRequest.method !== 'POST') {
+        return fnNext();
+    }
+
     const strFirstName = normalizeString(objRequest.body.firstName);
     const strLastName = normalizeString(objRequest.body.lastName);
     const strEmail = normalizeString(objRequest.body.email).toLowerCase();
     const strPhoneNo = normalizeString(objRequest.body.phoneNo);
     const strPassword = normalizeString(objRequest.body.password);
-
     const objExistingUserStatement = objDatabase.prepare(`
         SELECT User_ID
         FROM tblUsers
@@ -459,33 +495,38 @@ objIndexPreviewRoutes.post('/signUp', (objRequest, objResponse) => {
     intCurrentUserId = objInsertResult.lastInsertRowid;
 
     return objResponse.status(201).json({
-        Outcome: true
+        Outcome: true,
+        User_ID: objInsertResult.lastInsertRowid
     });
-});
+};
 
-/**********************************************************************
- * Optional helper preview route
- *
- * This route is not called by your current js/index.js, but it can help
- * you inspect what the temporary in-memory draft currently contains while
- * testing the step-by-step form flow.
- **********************************************************************/
-objIndexPreviewRoutes.get('/preview-draft', (objRequest, objResponse) => {
-    return objResponse.status(200).json([objResumeDraft]);
-});
+const handlePreviewDraftRoute = (objRequest, objResponse, fnNext) => {
+    if (objRequest.method === 'GET') {
+        return objResponse.status(200).json([objResumeDraft]);
+    }
 
-/**********************************************************************
- * Optional helper preview route
- *
- * This route is also only for testing and review. It clears the in-memory
- * draft so you can start a new manual test run.
- **********************************************************************/
-objIndexPreviewRoutes.delete('/preview-draft', (objRequest, objResponse) => {
-    resetResumeDraft();
+    if (objRequest.method === 'DELETE') {
+        resetResumeDraft();
 
-    return objResponse.status(200).json({
-        Outcome: true
-    });
-});
+        return objResponse.status(200).json({
+            Outcome: true
+        });
+    }
 
-export default objIndexPreviewRoutes;
+    return fnNext();
+};
+
+const registerIndexPreviewRoutes = (app) => {
+    app.use('/personal-info', handlePersonalInfoRoute);
+    app.use('/work-experience', handleWorkExperienceRoute);
+    app.use('/skill', handleSkillRoute);
+    app.use('/certification', handleCertificationRoute);
+    app.use('/award', handleAwardRoute);
+    app.use('/project', handleProjectRoute);
+    app.use('/title', handleTitleRoute);
+    app.use('/login', handleLoginRoute);
+    app.use('/signUp', handleSignUpRoute);
+    app.use('/preview-draft', handlePreviewDraftRoute);
+};
+
+export default registerIndexPreviewRoutes;
