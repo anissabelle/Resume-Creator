@@ -135,7 +135,7 @@ document.querySelector('#btnAddJob').addEventListener("click", async function(){
                     Swal.fire({
                         title:"Oh no, something went wrong!",
                         icon:"error",
-                        text:objData.Error
+                        text: objData.Error
                     })
                 }
         } catch (error){
@@ -780,6 +780,7 @@ document.querySelector('#btnBack7').addEventListener("click", function(){
     document.querySelector('#divSeventhStep').classList.add("d-none")
     document.querySelector('#divSixthStep').classList.remove("d-none")
 })
+// Can access the saved resumeID with objData.Resume_ID
 document.querySelector('#btnSubmit').addEventListener("click", async function(){
     const title = document.querySelector('#inputTitle').value.trim()
     let strErrorMessage = "You must enter a title to create resume"
@@ -806,6 +807,7 @@ document.querySelector('#btnSubmit').addEventListener("click", async function(){
                 let timerInterval;
                 Swal.fire({
                 title: "Resume Submitted!",
+                text: `Resume saved with ID ${objData.Resume_ID}.`,
                 html: "Closing in <b></b> milliseconds.",
                 timer: 1000,
                 timerProgressBar: true,
@@ -854,6 +856,9 @@ document.querySelector('#btnSignIn').addEventListener("click", function(){
     document.querySelector('#divLogin').classList.remove('d-none')
     document.querySelector('#divMainPage').classList.add('d-none')
 })
+// User ID stored in objData.User_ID
+// This could be saved in session storage so that user does not have to login again
+// Would like to add this feature
 document.querySelector('#btnLogin').addEventListener("click", async function(){
     const email = document.querySelector('#inputLoginEmail').value.trim()
     const password = document.querySelector('#inputLoginPassword').value.trim()
@@ -949,7 +954,9 @@ document.querySelector('#btnLoginToSignUp').addEventListener("click", function()
  * 
  * 
 ****************/ 
-
+// User ID stored in objData.User_ID same as Login form
+// This could be saved in session storage so that user does not have to login again
+// Would like to add this feature
 document.querySelector('#btnSignUp').addEventListener("click", async function(){
     const firstName = document.querySelector('#inputSignUpFirstName').value.trim()
     const lastName = document.querySelector('#inputSignUpLastName').value.trim()

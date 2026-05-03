@@ -1,4 +1,5 @@
 import express from 'express';
+// Grabs our Routes
 import registerIndexPreviewRoutes from './api/routing/indexPreviewRoutes.js';
 
 /**********************************************************************
@@ -11,27 +12,14 @@ import registerIndexPreviewRoutes from './api/routing/indexPreviewRoutes.js';
  *
  **********************************************************************/
 
-const intHttpPort = 8001;
+const HTTP_PORT = 8001;
 const app = express();
-
-/*
-    This middleware allows Express to read JSON request bodies sent from
-    the frontend fetch requests in js/index.js.
-*/
-app.use((objRequest, objResponse, fnNext) => {
-    objResponse.header('Access-Control-Allow-Origin', '*');
-    objResponse.header('Access-Control-Allow-Headers', 'Content-Type');
-    objResponse.header('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');
-
-    if (objRequest.method === 'OPTIONS') {
-        return objResponse.sendStatus(204);
-    }
-
-    return fnNext();
-});
 
 app.use(express.json());
 // Serve index.html, index.js, css files, etc.
+// "Allow the browser to access static files from this folder" 
+// "." means the current project folder where your server is running
+// Allows express to serve frontend files
 app.use(express.static("."));
 
 /*
@@ -41,5 +29,5 @@ app.use(express.static("."));
 registerIndexPreviewRoutes(app);
 
 app.listen(intHttpPort, () => {
-    console.log(`Listening on ${intHttpPort}`);
+    console.log(`Listening on ${HTTP_PORT}`);
 });

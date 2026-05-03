@@ -1,3 +1,6 @@
+When creating the resume builder, I wasn't planning on creating the user account features
+Therefore, I also wasn't planning on creating the login and sign up features
+
 For the Resume Recipe website, I used Codex to help me create the SQL Database,
 the api requests.
 
