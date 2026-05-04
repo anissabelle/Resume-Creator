@@ -1,0 +1,51 @@
+Before I started working on this project, I did not consider developing the "Create Account" feature.
+While developing, I realized it would be nice for users to be able to store multiple resume drafts
+and view/edit/delete the drafts as they wished. Throughout development, I felt like maybe I had set my
+ambitions too high because I had to focus on the "Create Account" feature before the resume building feature.
+
+I worked on most the frontend myself. Basically all of index.html and index.js was created by me.
+In retrospect, I realize how developing is a whole lot of copy and paste, at least website development it seems.
+Although, I think a good amount of the code I have written could be considerably more efficient with functions.
+For example, showing and hiding pages on my website could easily be a function. Most of the API requests are
+very similar, at least the resume form steps, and could be created as a function. Specifically in my API requests, 
+my try-catch code blocks are all practically the same, and a function could take a few parameters to achieve the same goal
+for each request.
+
+I wrote most the frontend myself because I honestly wanted to try to develop without using Codex.
+Like I mentioned, I realized I was doing a lot of copying and pasting, so once I needed to create
+the API routes, I decided to use Codex. I also did want to practice using Codex with AGENTS.md like how
+developers are using it in the industry. I used the AGENTS.md from class and edited slightly, but I
+think I could've created a more in-depth AGENTS.md specific to my project. 
+I want to practice using Codex more and learn how to finetune my AGENTS.md and prompts to use AI more efficiently.
+
+I think that my id names for my resume steps should be changed to match the page it corresponds to.
+For example, divSeventhStep is not descriptive and confusing when going back and forth between the html and js files.
+
+Furthermore, there are many features I still plan to implement. Right now, my website only displays the completed resume draft.
+Features I want to add:
+    - Separation of the sign-up email and the resume email: I want users to be able to change the email on their resume
+    without it needing to match their account's email used for signing in
+    - View All Resume Drafts: Users who already have an account should be able to view their completed resumes. I want
+    this implemented as a navigation link. I want this page loaded as soon as the user logs in with a button at the bottom
+    for creating a new resume.
+    - Preview/Edit/Delete Resume Drafts: I want users to be able to view/edit/delete each resume saved to their account
+    - Edit resume: I want AI to give feedback to the user on how to make their resume better
+    - Loading resume: I want a "loading resume" Swal.fire popup while AI works on creating the resume rather than
+    the user seeing a blank resume form while the resume hasn't been processed/loaded onto the website
+    - Resume Templates: User should be able to select the style of resume template they want their resume to look like
+    - Resume Creation: I want the created resume to be visually nicer.
+
+I'm not sure if I like how I implemented the resume form with the multiple pages. I think it works well, but
+the form could request more information/resume data to help spoof up the resume.
+
+One thing I realized is that when I would think of a new feature to implement, there would be a couple more features
+that "piggyback" off the original feature. In a way it's awesome because I get to consider all the ways I can make my
+application better, but it can also be overwhelming having so many possibile features I want to implement.
+
+Finally, I definitely wished I spent more time during the planning phase, but it's also difficult to know what to expect
+when you've never developed something like this before. I really enjoyed working on this project although I did not
+completly finish it. It definetly gave me more confidence in my abilities and using Codex. After creating code using
+Codex, I did not look forward to looking over it necessarily, but I obviously had to. I realized while looking over the
+code that it wasn't hard to understand, and that most of it was just pattern recognition. I also was able to see everything
+from class fully connect like using PostMan to test API requests. Since I added the "Create Account" feature, I didn't want
+to have to test my API requests by going through every step in my resume builder.

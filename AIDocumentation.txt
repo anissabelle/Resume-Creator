@@ -1,24 +1,28 @@
-When creating the resume builder, I wasn't planning on creating the user account features
-Therefore, I also wasn't planning on creating the login and sign up features
+I used both Codex and ChatGPT to assist me with development.
 
-For the Resume Recipe website, I used Codex to help me create the SQL Database,
-the api requests.
+Codex created my SQL Database and API routes.
+I also used Codex to debug and run end-to-end tests for creating an account,
+logging in, and creating the resume.
 
-I built most the frontend myself besides the API requests. 
-I realized how much code I was copying and pasting, and I knew that API routes
-would be a lot of busy work.
+I had some issues with running my node server. Codex recognized there was an
+old process running on Port 8000 so I had it change my HTTP_PORT to 8001.
 
-Used AI to test API routes/requests specifically just for the Sign Up feature.
-It found that I had an old Node process using port 8000
+I had Codex alter my Swal.fire updates after I found errors with the popups not
+popping up. It was easier to have codex alter the same copied and pasted lines
+of code rather than alter every instance of that code block.
 
-Prompts given to Codex:
+Another error is handled was my /title API route/request failing. Codex used the DatabaseSync
+library for creating/executing SQL statements and used the .transaction function.
+It found that this function did not exist in the library it included so I had Codex change
+the sql statements to use explicit sql commands for creating a transaction.
 
-I am creating a resume builder website. I need help with creating the database. 
-The AGENTS.md file has the database design I would like to implement. If there 
-is any uncertainty ask questions to clarify. Please only create the database.
+I also had Codex and ChatGPT help with implementing the AI feature. Codex helped
+troubleshoot the AI call to ensure it was working.
 
-Can you help me create the API requests and routes according to the AGENTS.md file? 
-Can you create a copy of my index.js and resume.js file where you place the edits 
-rather than edit my original files?
+Also asked Codex how I can display the completed resume draft to take up most the screen.
+It used Bootstrap columns which I figured would be the solution.
 
-Can you delete the files you created from the last prompt?
+I used ChatGPT primarily to inspect code written by Codex so I could understand it efficiently.
+I copied and pasted certain lines I was unfamiliar with to understand how the code worked
+and I added comments to show my understanding. Most of the comments I created myself were
+the single line comments.

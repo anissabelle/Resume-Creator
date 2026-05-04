@@ -28,6 +28,6 @@ app.use(express.static("."));
 */
 registerIndexPreviewRoutes(app);
 
-app.listen(intHttpPort, () => {
+app.listen(HTTP_PORT, () => {
     console.log(`Listening on ${HTTP_PORT}`);
 });

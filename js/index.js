@@ -19,7 +19,8 @@ document.querySelector('#navCreate').addEventListener("click", function(){
     document.querySelectorAll('.page').forEach(div => {
         div.classList.add('d-none') 
     }) 
-    document.querySelector('#divResume').classList.remove("d-none") 
+    document.querySelector('#divResume').classList.remove("d-none")
+    document.querySelector('#divSecondStep').classList.remove("d-none")
 }) 
 document.querySelector('#navLogin').addEventListener("click", function(){
     document.querySelectorAll('.page').forEach(div => {
@@ -46,27 +47,12 @@ document.querySelector('#navSignUp').addEventListener("click", function(){
 // Resume Page: Tell us about yourself
 let userID = null // users have null ID until they log in
 document.querySelector('#btnStart').addEventListener("click", async function(){
-
-    userID = sessionStorage.getItem("userID")
-    // User must login/sign up to begin resume
-    if(userID != null){
-        document.querySelector('#divMainPage').classList.add("d-none")
-        document.querySelector('#divSecondStep').classList.remove("d-none")
-    }
-    else{
-        document.querySelector('#divMainPage').classList.add("d-none")
-        document.querySelector('#divSignUp').classList.remove("d-none")
-    }
+    document.querySelector('#divMainPage').classList.add("d-none")
+    document.querySelector('#divSignUp').classList.remove("d-none")
 })
 document.querySelector('#btnBack2').addEventListener("click", function(){
     document.querySelector('#divResume').classList.add("d-none")
     document.querySelector('#divMainPage').classList.remove("d-none")
-})
-
-// Resume Page: Work Experience
-document.querySelector('#btnBack2').addEventListener("click", function(){
-    document.querySelector('#divSecondStep').classList.add("d-none")
-    document.querySelector('#divFirstStep').classList.remove("d-none")
 })
 document.querySelector('#btnAddJob').addEventListener("click", async function(){
     const jobTitle = document.querySelector('#inputJobTitle').value.trim()
@@ -824,6 +810,10 @@ document.querySelector('#btnSubmit').addEventListener("click", async function(){
                 })
 
                 document.querySelector('#inputTitle').value = ""
+                document.querySelector('#divSeventhStep').classList.add('d-none')
+                document.querySelector('#divResumeDraft').classList.remove('d-none')
+
+                showResumeDraft()
             }
             else{
                     Swal.fire({
@@ -843,6 +833,40 @@ document.querySelector('#btnSubmit').addEventListener("click", async function(){
         }
     }
 })
+
+// Get request to get the resume PDF from Gemini
+async function showResumeDraft(){
+    // API request
+    try{
+        const response = await fetch(strBaseurl + "/preview-draft", {
+            method: "GET"
+        })
+
+        if(!response.ok){
+            const objData = await response.json()
+
+            Swal.fire({
+                title:"Oh no, something went wrong!",
+                icon:"error",
+                text: objData.Error
+            })
+            return
+        }
+
+        // objResume holds pdf blob file
+        const objResume = await response.blob()
+        // turns PDF Blob into a temporary browser URL that you can display on the page.
+        const strPDFUrl = URL.createObjectURL(objResume);
+        document.querySelector('#iframeResumePDF').src = strPDFUrl;
+    }catch (error){
+            Swal.fire({
+                title:"Oh no, something went wrong!",
+                icon:"error",
+                text:"Could not connect to the server."
+            })
+            return
+        }
+}
 
 /**************** 
  * 
@@ -963,6 +987,7 @@ document.querySelector('#btnSignUp').addEventListener("click", async function(){
     const phoneNo = document.querySelector('#inputSignUpPhone').value.trim()
     const email = document.querySelector('#inputSignUpEmail').value.trim()
     const password = document.querySelector('#inputSignUpPassword').value.trim()
+    const apiKey = document.querySelector('#inputSignUpAPI').value.trim()
     const regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
     const regexPhone = /^(\+1\s?)?(\(\d{3}\)|\d{3})[-.\s]?\d{3}[-.\s]?\d{4}$/
     let strErrorMessage = ""
@@ -992,6 +1017,11 @@ document.querySelector('#btnSignUp').addEventListener("click", async function(){
         strErrorMessage += "You must enter a password.<br>"
     }
 
+    if(!apiKey){
+        blnError = true
+        strErrorMessage += "You must enter a Google Gemini API key.<br>"
+    }
+
     if(blnError){
         Swal.fire({
             title: "Uh Oh...",
@@ -1006,6 +1036,7 @@ document.querySelector('#btnSignUp').addEventListener("click", async function(){
             lastName: lastName,
             email: email,
             phoneNo: phoneNo,
+            apiKey: apiKey,
             password: password
         }
         // API request
@@ -1039,6 +1070,7 @@ document.querySelector('#btnSignUp').addEventListener("click", async function(){
                     }
                     })
                     document.querySelector('#divSignUp').classList.add("d-none")
+                    document.querySelector('#divResume').classList.remove("d-none")
                     document.querySelector('#divSecondStep').classList.remove("d-none")
                 }
                 else {

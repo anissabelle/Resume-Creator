@@ -22,6 +22,7 @@ CREATE TABLE IF NOT EXISTS tblUsers (
     Last_Name TEXT NOT NULL CHECK (trim(Last_Name) <> ''),
     Phone_Number TEXT NOT NULL CHECK (trim(Phone_Number) <> ''),
     Email_Address TEXT NOT NULL UNIQUE CHECK (trim(Email_Address) <> ''),
+    Gemini_API_Key TEXT NOT NULL CHECK (trim(Gemini_API_Key) <> ''),
     Password_Hash TEXT NOT NULL CHECK (trim(Password_Hash) <> ''),
     Created_At TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
     Updated_At TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
