@@ -49,3 +49,5 @@ Codex, I did not look forward to looking over it necessarily, but I obviously ha
 code that it wasn't hard to understand, and that most of it was just pattern recognition. I also was able to see everything
 from class fully connect like using PostMan to test API requests. Since I added the "Create Account" feature, I didn't want
 to have to test my API requests by going through every step in my resume builder.
+
+I am okay with my project being shared, and you can use one of the resume builder images in the css folder.
